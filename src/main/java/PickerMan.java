@@ -2,14 +2,18 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.openqa.selenium.remote.service.DriverService;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.io.FileOutputStream;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 
 public class PickerMan {
     /**
@@ -24,12 +28,19 @@ public class PickerMan {
     public static final long LONG_WAITING = 2000L;
 
     public static void main(String[] args) throws Exception {
+        System.setProperty(ChromeDriverService.CHROME_DRIVER_SILENT_OUTPUT_PROPERTY, "true");
+        java.util.logging.Logger.getLogger("org.openqa.selenium").setLevel(Level.OFF);
+
+        DriverService.Builder serviceBuilder = new ChromeDriverService.Builder().withSilent(true);
+        ChromeDriverService chromeDriverService = (ChromeDriverService) serviceBuilder.build();
+        chromeDriverService.sendOutputTo(new FileOutputStream("/dev/null"));
+
         ChromeOptions options = new ChromeOptions();
 
         // 如果不想看到浏览器窗口，则需要加上这个浏览器启动参数
         // options.addArguments("--headless");
 
-        RemoteWebDriver driver = new ChromeDriver(options);
+        RemoteWebDriver driver = new ChromeDriver(chromeDriverService, options);
 
         WebDriverWait wait = new WebDriverWait(driver, 30);
 
